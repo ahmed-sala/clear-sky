@@ -88,7 +88,6 @@ struct SplashView: View {
         .onAppear { scheduleLottieFallback() }
     }
 
-    // MARK: - Sub-views
 
     private var background: some View {
         ZStack {
@@ -175,7 +174,6 @@ struct SplashView: View {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
             withAnimation { phase = .nameReveal }
 
-            // Stagger each letter
             for (i, _) in AppName.letters.enumerated() {
                 let delay = Double(i) * 0.07
                 DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
@@ -207,7 +205,7 @@ struct SplashView: View {
 
 
 private enum AppName {
-    static let full    = "Cleae Sky"
+    static let full    = "Clear Sky"
     static let letters = Array(full)
 }
 
