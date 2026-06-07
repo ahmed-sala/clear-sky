@@ -16,7 +16,7 @@ struct AppRootView: View {
         ZStack {
             if splashFinished {
 
-                HomeView(viewModel: DIContainer.shared.makeHomeViewModel())
+                DashboardView()
                     .transition(.opacity)
             } else {
 
