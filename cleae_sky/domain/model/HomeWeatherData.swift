@@ -16,7 +16,6 @@ struct HomeWeatherData {
     let tempMax: Double
     let tempMin: Double
 
-    // Detail cards
     let humidity: Int
     let visibility: Int
     let feelsLike: Double
