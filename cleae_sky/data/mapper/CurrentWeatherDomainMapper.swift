@@ -1,16 +1,14 @@
 //
-//  CurrentWeatherEntityMapper.swift
+//  CurrentWeatherDomainMapper.swift
 //  cleae_sky
 //
-//  Created by Ahmed Salah on 05/06/2026.
+//  Created by Ahmed Salah on 07/06/2026.
 //
 
-import Foundation
+extension CurrentWeatherEntity {
 
-extension CurrentWeather {
-
-    func toEntity() -> CurrentWeatherEntity {
-        CurrentWeatherEntity(
+    func toDomain() -> CurrentWeather {
+        CurrentWeather(
             id: id,
             cityName: cityName,
             country: country,

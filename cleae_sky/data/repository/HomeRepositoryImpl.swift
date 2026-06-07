@@ -9,115 +9,202 @@ import Foundation
 
 final class HomeRepositoryImpl: HomeRepository {
 
-
     private let remoteDataSource: WeatherRemoteDataSource
+    private let localDataSource: HomeWeatherLocalDataSource
 
-
-    init(remoteDataSource: WeatherRemoteDataSource) {
+    init(
+        remoteDataSource: WeatherRemoteDataSource,
+        localDataSource: HomeWeatherLocalDataSource
+    ) {
         self.remoteDataSource = remoteDataSource
+        self.localDataSource = localDataSource
     }
 
+    func fetchHomeWeatherData(
+        lat: Double,
+        lon: Double,
+        units: String = "metric",
+        lang: String = "en"
+    ) async throws -> HomeWeatherData {
 
-    func fetchHomeWeatherData(lat: Double,
-                              lon: Double,
-                              units: String = "metric",
-                              lang: String = "en") async throws -> HomeWeatherData {
+        do {
 
-        async let currentDTO  = remoteDataSource.fetchCurrentWeather(lat: lat, lon: lon,
-                                                                     units: units, lang: lang)
-        async let forecastDTO = remoteDataSource.fetchForecast(lat: lat, lon: lon,
-                                                               units: units, lang: lang)
+            async let currentDTO = remoteDataSource.fetchCurrentWeather(
+                lat: lat,
+                lon: lon,
+                units: units,
+                lang: lang
+            )
 
-        let (current, forecast) = try await (currentDTO, forecastDTO)
+            async let forecastDTO = remoteDataSource.fetchForecast(
+                lat: lat,
+                lon: lon,
+                units: units,
+                lang: lang
+            )
 
-        let currentWeather = current.toDomain()
-        let forecastDomain = forecast.toDomain()
+            let (current, forecast) = try await (currentDTO, forecastDTO)
 
-        let dailySummaries = buildDailySummaries(from: forecastDomain.forecastItems,
-                                                 timezone: forecastDomain.timezone)
+            let homeData = buildHomeWeatherData(
+                current: current.toDomain(),
+                forecast: forecast.toDomain()
+            )
+
+            try? localDataSource.save(
+                homeData.toEntity()
+            )
+
+            return homeData
+
+        } catch {
+
+            if let cachedEntity = try? localDataSource.getCachedHomeData() {
+                return cachedEntity.toDomain()
+            }
+
+            throw error
+        }
+    }
+
+    func fetchLocationName(
+        lat: Double,
+        lon: Double
+    ) async throws -> SearchLocation {
+
+        let results = try await remoteDataSource.fetchLocationByCoordinates(
+            lat: lat,
+            lon: lon,
+            limit: 1
+        )
+
+        guard let first = results.first else {
+            throw APIError.noData
+        }
+
+        return first.toDomain()
+    }
+
+    func searchLocations(
+        query: String
+    ) async throws -> [SearchLocation] {
+
+        let results = try await remoteDataSource.searchLocationByName(
+            query,
+            limit: 5
+        )
+
+        return results.map { $0.toDomain() }
+    }
+}
+
+
+private extension HomeRepositoryImpl {
+
+    func buildHomeWeatherData(
+        current: CurrentWeather,
+        forecast: Forecast
+    ) -> HomeWeatherData {
+
+        let dailySummaries = buildDailySummaries(
+            from: forecast.forecastItems,
+            timezone: forecast.timezone
+        )
 
         return HomeWeatherData(
-            cityName: currentWeather.cityName,
-            country: currentWeather.country,
-            currentTemperature: currentWeather.temperature,
-            weatherCondition: currentWeather.weatherCondition,
-            weatherDescription: currentWeather.weatherDescription,
-            weatherIcon: currentWeather.weatherIcon,
-            tempMax: currentWeather.tempMax,
-            tempMin: currentWeather.tempMin,
-            humidity: currentWeather.humidity,
-            visibility: currentWeather.visibility,
-            feelsLike: currentWeather.feelsLike,
-            pressure:  currentWeather.pressure,
+            cityName: current.cityName,
+            country: current.country,
+            currentTemperature: current.temperature,
+            weatherCondition: current.weatherCondition,
+            weatherDescription: current.weatherDescription,
+            weatherIcon: current.weatherIcon,
+            tempMax: current.tempMax,
+            tempMin: current.tempMin,
+            humidity: current.humidity,
+            visibility: current.visibility,
+            feelsLike: current.feelsLike,
+            pressure: current.pressure,
             dailyForecasts: dailySummaries
         )
     }
 
-
-    func fetchLocationName(lat: Double, lon: Double) async throws -> SearchLocation {
-        let results = try await remoteDataSource.fetchLocationByCoordinates(lat: lat,
-                                                                            lon: lon,
-                                                                            limit: 1)
-        guard let first = results.first else {
-            throw APIError.noData
-        }
-        return first.toDomain()
-    }
-
-    func searchLocations(query: String) async throws -> [SearchLocation] {
-        let results = try await remoteDataSource.searchLocationByName(query, limit: 5)
-        return results.map { $0.toDomain() }
-    }
-
-    private func buildDailySummaries(from items: [ForecastItem],
-                                     timezone: Int) -> [DailyForecastSummary] {
+    func buildDailySummaries(
+        from items: [ForecastItem],
+        timezone: Int
+    ) -> [DailyForecastSummary] {
 
         let tzOffset = TimeInterval(timezone)
+
         var grouped: [String: [ForecastItem]] = [:]
 
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
-        formatter.timeZone = TimeZone(secondsFromGMT: Int(tzOffset))
+        formatter.timeZone = TimeZone(secondsFromGMT: timezone)
 
         for item in items {
-            let date = Date(timeIntervalSince1970: TimeInterval(item.timestamp) + tzOffset)
-            let key  = formatter.string(from: date)
+
+            let date = Date(
+                timeIntervalSince1970: TimeInterval(item.timestamp) + tzOffset
+            )
+
+            let key = formatter.string(from: date)
+
             grouped[key, default: []].append(item)
         }
 
         let sortedKeys = grouped.keys.sorted()
-        let todayKey   = formatter.string(from: Date())
+        let todayKey = formatter.string(from: Date())
 
         var summaries: [DailyForecastSummary] = []
 
         for (index, key) in sortedKeys.enumerated() {
-            guard let dayItems = grouped[key], !dayItems.isEmpty else { continue }
-            guard summaries.count < 3 else { break }
 
-            let minTemp  = dayItems.map(\.tempMin).min() ?? 0
-            let maxTemp  = dayItems.map(\.tempMax).max() ?? 0
-
-            let icon = dayItems
-                .first(where: { $0.dateTime.contains("12:00:00") })?
-                .weatherIcon ?? dayItems[0].weatherIcon
-
-            let label: String
-            if key == todayKey {
-                label = "Today"
-            } else if index == sortedKeys.firstIndex(of: todayKey).map({ $0 + 1 }) {
-                label = "Tomorrow"
-            } else {
-                let date = Date(timeIntervalSince1970: TimeInterval(dayItems[0].timestamp))
-                let wdFormatter = DateFormatter()
-                wdFormatter.dateFormat = "EEE"
-                wdFormatter.timeZone = TimeZone(secondsFromGMT: Int(tzOffset))
-                label = wdFormatter.string(from: date)
+            guard let dayItems = grouped[key],
+                  !dayItems.isEmpty else {
+                continue
             }
 
-            summaries.append(DailyForecastSummary(dayLabel: label,
-                                                   weatherIcon: icon,
-                                                   tempMin: minTemp,
-                                                   tempMax: maxTemp))
+            guard summaries.count < 3 else {
+                break
+            }
+
+            let minTemp = dayItems.map(\.tempMin).min() ?? 0
+            let maxTemp = dayItems.map(\.tempMax).max() ?? 0
+
+            let icon = dayItems.first {
+                $0.dateTime.contains("12:00:00")
+            }?.weatherIcon ?? dayItems[0].weatherIcon
+
+            let label: String
+
+            if key == todayKey {
+
+                label = "Today"
+
+            } else if index == sortedKeys.firstIndex(of: todayKey).map({ $0 + 1 }) {
+
+                label = "Tomorrow"
+
+            } else {
+
+                let date = Date(
+                    timeIntervalSince1970: TimeInterval(dayItems[0].timestamp)
+                )
+
+                let dayFormatter = DateFormatter()
+                dayFormatter.dateFormat = "EEE"
+                dayFormatter.timeZone = TimeZone(secondsFromGMT: timezone)
+
+                label = dayFormatter.string(from: date)
+            }
+
+            summaries.append(
+                DailyForecastSummary(
+                    dayLabel: label,
+                    weatherIcon: icon,
+                    tempMin: minTemp,
+                    tempMax: maxTemp
+                )
+            )
         }
 
         return summaries
