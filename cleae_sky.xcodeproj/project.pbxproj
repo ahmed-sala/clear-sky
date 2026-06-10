@@ -14,9 +14,22 @@
 		6D3F75202FD219D8001AC1CA /* cleae_sky.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = cleae_sky.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		6DF1DD292FD9E113004650E3 /* Exceptions for "cleae_sky" folder in "cleae_sky" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"cleae-sky-Info.plist",
+			);
+			target = 6D3F751F2FD219D8001AC1CA /* cleae_sky */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		6D3F75222FD219D8001AC1CA /* cleae_sky */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				6DF1DD292FD9E113004650E3 /* Exceptions for "cleae_sky" folder in "cleae_sky" target */,
+			);
 			path = cleae_sky;
 			sourceTree = "<group>";
 		};
@@ -262,6 +275,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "cleae-sky-Info.plist";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We use your location to show weather information.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -293,6 +308,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "cleae-sky-Info.plist";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We use your location to show weather information.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
