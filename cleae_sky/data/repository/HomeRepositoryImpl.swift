@@ -110,6 +110,9 @@ private extension HomeRepositoryImpl {
             timezone: forecast.timezone
         )
 
+
+        let today = dailySummaries.first
+
         return HomeWeatherData(
             cityName: current.cityName,
             country: current.country,
@@ -117,8 +120,8 @@ private extension HomeRepositoryImpl {
             weatherCondition: current.weatherCondition,
             weatherDescription: current.weatherDescription,
             weatherIcon: current.weatherIcon,
-            tempMax: current.tempMax,
-            tempMin: current.tempMin,
+            tempMax: today?.tempMax ?? current.temperature,
+            tempMin: today?.tempMin ?? current.temperature,
             humidity: current.humidity,
             visibility: current.visibility,
             feelsLike: current.feelsLike,
@@ -132,24 +135,18 @@ private extension HomeRepositoryImpl {
         timezone: Int
     ) -> [DailyForecastSummary] {
 
-        let tzOffset = TimeInterval(timezone)
 
         var grouped: [String: [ForecastItem]] = [:]
+
+        for item in items {
+            guard item.dateTime.count >= 10 else { continue }
+            let key = String(item.dateTime.prefix(10))
+            grouped[key, default: []].append(item)
+        }
 
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
         formatter.timeZone = TimeZone(secondsFromGMT: timezone)
-
-        for item in items {
-
-            let date = Date(
-                timeIntervalSince1970: TimeInterval(item.timestamp) + tzOffset
-            )
-
-            let key = formatter.string(from: date)
-
-            grouped[key, default: []].append(item)
-        }
 
         let sortedKeys = grouped.keys.sorted()
         let todayKey = formatter.string(from: Date())

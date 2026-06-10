@@ -9,11 +9,9 @@ import Foundation
 
 final class ApiServiceImpl: APIService {
 
-
     private let configuration: APIConfiguration
     private let session: URLSession
     private let decoder: JSONDecoder
-
 
     init(configuration: APIConfiguration = .default,
          session: URLSession = .shared) {
@@ -27,7 +25,6 @@ final class ApiServiceImpl: APIService {
         self.decoder = JSONDecoder()
         self.decoder.keyDecodingStrategy = .convertFromSnakeCase
     }
-
 
     func request<T: Decodable>(_ endpoint: APIEndpoint) async throws -> T {
         let urlRequest = try buildRequest(for: endpoint)
@@ -64,7 +61,6 @@ final class ApiServiceImpl: APIService {
         }
     }
 
-
     private func buildRequest(for endpoint: APIEndpoint) throws -> URLRequest {
         guard var components = URLComponents(string: configuration.baseURL + endpoint.path) else {
             throw APIError.invalidURL
@@ -73,7 +69,7 @@ final class ApiServiceImpl: APIService {
         var queryItems = endpoint.queryParameters.map {
             URLQueryItem(name: $0.key, value: $0.value)
         }
-        queryItems.append(URLQueryItem(name: "appid", value: configuration.apiKey))
+        queryItems.append(URLQueryItem(name: "key", value: configuration.apiKey))
         components.queryItems = queryItems
 
         guard let url = components.url else {
@@ -81,7 +77,7 @@ final class ApiServiceImpl: APIService {
         }
 
         var request = URLRequest(url: url)
-        request.httpMethod  = endpoint.method.rawValue
+        request.httpMethod = endpoint.method.rawValue
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         return request
     }

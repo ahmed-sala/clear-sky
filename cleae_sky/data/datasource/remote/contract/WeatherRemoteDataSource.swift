@@ -6,20 +6,12 @@
 //
 
 protocol WeatherRemoteDataSource {
-    func fetchCurrentWeather(lat: Double,
-                             lon: Double,
-                             units: String,
-                             lang: String) async throws -> CurrentWeatherResponseDTO
 
-    func fetchForecast(lat: Double,
-                       lon: Double,
-                       units: String,
-                       lang: String) async throws -> ForecastResponseDTO
+    func fetchCurrentWeather(lat: Double,lon: Double,units: String,lang: String) async throws -> CurrentWeatherResponseDTO
 
-    func searchLocationByName(_ query: String,
-                               limit: Int) async throws -> [GeocodingResponseDTO]
+    func fetchForecast(lat: Double,lon: Double,units: String,lang: String) async throws -> ForecastResponseDTO
 
-    func fetchLocationByCoordinates(lat: Double,
-                                    lon: Double,
-                                    limit: Int) async throws -> [GeocodingResponseDTO]
+    func searchLocationByName(_ query: String,limit: Int) async throws -> [SearchLocationDTO]
+
+    func fetchLocationByCoordinates(lat: Double,lon: Double,limit: Int) async throws -> [SearchLocationDTO]
 }

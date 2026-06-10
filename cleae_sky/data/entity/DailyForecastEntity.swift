@@ -11,7 +11,7 @@ import SwiftData
 final class DailyForecastEntity {
 
     var dayLabel: String
-    var weatherIcon: String
+    var weatherIcon: String    
     var tempMin: Double
     var tempMax: Double
 

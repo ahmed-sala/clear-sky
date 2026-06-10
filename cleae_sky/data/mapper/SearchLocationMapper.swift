@@ -1,13 +1,8 @@
-//
-//  GeocodingMapper.swift
-//  cleae_sky
-//
-//  Created by Ahmed Salah on 05/06/2026.
-//
+
 
 import Foundation
 
-extension GeocodingResponseDTO {
+extension SearchLocationDTO {
 
     func toDomain() -> SearchLocation {
 
@@ -16,7 +11,7 @@ extension GeocodingResponseDTO {
             latitude: lat ?? 0,
             longitude: lon ?? 0,
             country: country ?? "",
-            state: state
+            state: region
         )
     }
 }

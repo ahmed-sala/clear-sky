@@ -4,20 +4,34 @@
 //
 //  Created by Ahmed Salah on 07/06/2026.
 //
-
 import SwiftUI
-
 
 struct HomeView: View {
 
-    private let viewModel: HomeViewModel
+    @StateObject private var viewModel: HomeViewModel
 
     init(viewModel: HomeViewModel) {
-        self.viewModel = viewModel
+        _viewModel = StateObject(wrappedValue: viewModel)
     }
 
     var body: some View {
-        Text("Hello, World!")
+        ZStack {
+
+            Image(viewModel.backgroundImageName)
+                .resizable()
+                .scaledToFill()
+                .ignoresSafeArea()
+
+            Color.black.opacity(0.4)
+                .ignoresSafeArea()
+
+            VStack {
+                Text("Hello, World!")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .foregroundStyle(.white)
+            }
+        }
     }
 }
 
