@@ -9,10 +9,8 @@ import Foundation
 
 struct HomeWeatherData {
     let cityName: String
-    let country: String
 
     let currentTemperature: Double
-    let weatherCondition: String
     let weatherDescription: String
     let weatherIcon: String
 
@@ -28,11 +26,9 @@ struct HomeWeatherData {
     let hourlyForecasts: [HourlyForecast]
 }
 
-struct DailyForecastSummary : Identifiable{
-    let id = UUID()
-
+struct DailyForecastSummary {
     let dayLabel: String
-    let weatherIcon: String    
+    let weatherIcon: String
     let tempMin: Double
     let tempMax: Double
 }

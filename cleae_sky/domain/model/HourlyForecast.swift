@@ -7,9 +7,7 @@
 
 import Foundation
 
-struct HourlyForecast: Identifiable {
-
-    let id = UUID()
+struct HourlyForecast {
 
     let time: String
     let temperature: Double

@@ -23,7 +23,6 @@ enum WeatherEndpoint: APIEndpoint {
     case currentWeather(lat: Double, lon: Double, lang: String)
     case forecast(lat: Double, lon: Double, days: Int, lang: String)
     case searchByName(query: String)
-    case searchByCoordinates(lat: Double, lon: Double)
 
     var path: String {
         switch self {
@@ -31,7 +30,7 @@ enum WeatherEndpoint: APIEndpoint {
             return "/current.json"
         case .forecast:
             return "/forecast.json"
-        case .searchByName, .searchByCoordinates:
+        case .searchByName:
             return "/search.json"
         }
     }
@@ -60,9 +59,6 @@ enum WeatherEndpoint: APIEndpoint {
 
         case let .searchByName(query):
             return ["q": query]
-
-        case let .searchByCoordinates(lat, lon):
-            return ["q": "\(lat),\(lon)"]
         }
     }
 }

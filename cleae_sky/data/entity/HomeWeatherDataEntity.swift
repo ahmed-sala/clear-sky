@@ -13,12 +13,10 @@ final class HomeWeatherDataEntity {
     var id: String
 
     var cityName: String
-    var country: String
 
     var currentTemperature: Double
-    var weatherCondition: String
     var weatherDescription: String
-    var weatherIcon: String       
+    var weatherIcon: String
     var tempMax: Double
     var tempMin: Double
     var humidity: Int
@@ -32,9 +30,7 @@ final class HomeWeatherDataEntity {
     init(
         id: String = "home_weather",
         cityName: String,
-        country: String,
         currentTemperature: Double,
-        weatherCondition: String,
         weatherDescription: String,
         weatherIcon: String,
         tempMax: Double,
@@ -47,9 +43,7 @@ final class HomeWeatherDataEntity {
     ) {
         self.id = id
         self.cityName = cityName
-        self.country = country
         self.currentTemperature = currentTemperature
-        self.weatherCondition = weatherCondition
         self.weatherDescription = weatherDescription
         self.weatherIcon = weatherIcon
         self.tempMax = tempMax

@@ -24,8 +24,8 @@ enum DashboardTabs : String, CaseIterable{
     }
     var view: AnyView {
         switch self{
-        case .home : return AnyView(HomeView(viewModel: DIContainer.shared.makeHomeViewModel()))
-        case .locations : return AnyView(LocationsView())
+        case .home : return AnyView(NavigationStack { HomeView(viewModel: DIContainer.shared.makeHomeViewModel()) })
+        case .locations : return AnyView(LocationsView(viewModel: DIContainer.shared.makeLocationsViewModel()))
         }
     }
 }

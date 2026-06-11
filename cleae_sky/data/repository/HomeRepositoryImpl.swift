@@ -66,35 +66,6 @@ final class HomeRepositoryImpl: HomeRepository {
         }
     }
 
-    func fetchLocationName(
-        lat: Double,
-        lon: Double
-    ) async throws -> SearchLocation {
-
-        let results = try await remoteDataSource.fetchLocationByCoordinates(
-            lat: lat,
-            lon: lon,
-            limit: 1
-        )
-
-        guard let first = results.first else {
-            throw APIError.noData
-        }
-
-        return first.toDomain()
-    }
-
-    func searchLocations(
-        query: String
-    ) async throws -> [SearchLocation] {
-
-        let results = try await remoteDataSource.searchLocationByName(
-            query,
-            limit: 5
-        )
-
-        return results.map { $0.toDomain() }
-    }
 }
 
 
@@ -119,9 +90,7 @@ private extension HomeRepositoryImpl {
 
         return HomeWeatherData(
             cityName: current.cityName,
-            country: current.country,
             currentTemperature: current.temperature,
-            weatherCondition: current.weatherCondition,
             weatherDescription: current.weatherDescription,
             weatherIcon: current.weatherIcon,
             tempMax: today?.tempMax ?? current.temperature,
@@ -169,8 +138,8 @@ private extension HomeRepositoryImpl {
                 break
             }
 
-            let minTemp = dayItems.map(\.tempMin).min() ?? 0
-            let maxTemp = dayItems.map(\.tempMax).max() ?? 0
+            let minTemp = dayItems.map(\.temperature).min() ?? 0
+            let maxTemp = dayItems.map(\.temperature).max() ?? 0
 
             let icon = dayItems.first {
                 $0.dateTime.contains("12:00:00")

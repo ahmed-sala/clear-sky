@@ -8,14 +8,7 @@
 import Foundation
 
 struct Forecast{
-    let cityName: String
-    let country: String
-    let latitude: Double
-    let longitude: Double
-
-    let timezone: Int          
-    let sunrise: Int       
-    let sunset: Int        
+    let timezone: Int
 
     let forecastItems: [ForecastItem]
 }

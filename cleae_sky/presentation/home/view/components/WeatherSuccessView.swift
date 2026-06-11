@@ -54,9 +54,7 @@ struct WeatherSuccessView: View {
         WeatherSuccessView(
             weather: HomeWeatherData(
                 cityName: "Cairo",
-                country: "EG",
                 currentTemperature: 28,
-                weatherCondition: "Clear",
                 weatherDescription: "Clear Sky",
                 weatherIcon: "sun.max.fill",
                 tempMax: 35,

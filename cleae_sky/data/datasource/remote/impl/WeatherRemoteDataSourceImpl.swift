@@ -39,13 +39,6 @@ final class WeatherRemoteDataSourceImpl: WeatherRemoteDataSource {
                               limit: Int = 5) async throws -> [SearchLocationDTO] {
         let endpoint = WeatherEndpoint.searchByName(query: query)
         let results: [SearchLocationDTO] = try await apiService.request(endpoint)
-        return Array(results.prefix(limit))     }
-
-    func fetchLocationByCoordinates(lat: Double,
-                                    lon: Double,
-                                    limit: Int = 1) async throws -> [SearchLocationDTO] {
-        let endpoint = WeatherEndpoint.searchByCoordinates(lat: lat, lon: lon)
-        let results: [SearchLocationDTO] = try await apiService.request(endpoint)
         return Array(results.prefix(limit))
     }
 }

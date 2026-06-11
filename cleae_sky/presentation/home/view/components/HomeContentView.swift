@@ -19,8 +19,16 @@ struct HomeContentView: View {
         switch state {
 
         case .idle:
-            ProgressView()
-                .tint(.white)
+            if isLocationDenied {
+                WeatherErrorView(
+                    error: "Location permission denied.",
+                    isLocationDenied: true,
+                    openSettings: openSettings
+                )
+            } else {
+                ProgressView()
+                    .tint(.white)
+            }
 
         case .loading:
             LoadingWeatherView()

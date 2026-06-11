@@ -12,6 +12,4 @@ protocol WeatherRemoteDataSource {
     func fetchForecast(lat: Double,lon: Double,units: String,lang: String) async throws -> ForecastResponseDTO
 
     func searchLocationByName(_ query: String,limit: Int) async throws -> [SearchLocationDTO]
-
-    func fetchLocationByCoordinates(lat: Double,lon: Double,limit: Int) async throws -> [SearchLocationDTO]
 }
