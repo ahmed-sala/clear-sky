@@ -7,21 +7,21 @@
 
 import Foundation
 import Combine
-
+enum HomeState {
+    case idle
+    case loading
+    case success(HomeWeatherData)
+    case failure(String)
+}
 @MainActor
 final class HomeViewModel: ObservableObject {
 
 
-    enum ViewState {
-        case idle
-        case loading
-        case success(HomeWeatherData)
-        case failure(String)
-    }
+
     var backgroundImageName: String {
         TimeHelper.backgroundImageName()
     }
-    @Published private(set) var state: ViewState = .idle
+    @Published private(set) var state: HomeState = .idle
 private var loadTask: Task<Void, Never>?
 
 
