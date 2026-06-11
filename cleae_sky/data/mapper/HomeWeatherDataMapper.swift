@@ -13,9 +13,7 @@ extension HomeWeatherData {
 
         HomeWeatherDataEntity(
             cityName: cityName,
-            country: country,
             currentTemperature: currentTemperature,
-            weatherCondition: weatherCondition,
             weatherDescription: weatherDescription,
             weatherIcon: weatherIcon,
             tempMax: tempMax,
@@ -37,9 +35,7 @@ extension HomeWeatherDataEntity {
 
         HomeWeatherData(
             cityName: cityName,
-            country: country,
             currentTemperature: currentTemperature,
-            weatherCondition: weatherCondition,
             weatherDescription: weatherDescription,
             weatherIcon: weatherIcon,
             tempMax: tempMax,
@@ -50,7 +46,8 @@ extension HomeWeatherDataEntity {
             pressure: pressure,
             dailyForecasts: dailyForecasts.map {
                 $0.toDomain()
-            },hourlyForecasts: []
+            },
+            hourlyForecasts: []
         )
     }
 }

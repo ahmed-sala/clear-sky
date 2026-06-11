@@ -21,7 +21,9 @@ final class DIContainer {
 
         do {
             self.modelContainer = try ModelContainer(
-                for: HomeWeatherDataEntity.self
+                for:
+                    HomeWeatherDataEntity.self,
+                    SavedLocationEntity.self
             )
         } catch {
             fatalError("Failed to create ModelContainer: \(error)")
@@ -49,7 +51,26 @@ final class DIContainer {
         )
     }()
 
+
+    private(set) lazy var locationLocalDataSource: LocationLocalDataSource = {
+        LocationLocalDataSourceImpl(
+            context: modelContainer.mainContext
+        )
+    }()
+
+    private(set) lazy var locationRepository: LocationRepository = {
+        LocationRepositoryImpl(
+            remoteDataSource: weatherRemoteDataSource,
+            localDataSource: locationLocalDataSource
+        )
+    }()
+
     func makeHomeViewModel() -> HomeViewModel {
         HomeViewModel(repository: homeRepository)
+    }
+    func makeLocationsViewModel() -> LocationsViewModel {
+        LocationsViewModel(
+            repository: locationRepository
+        )
     }
 }

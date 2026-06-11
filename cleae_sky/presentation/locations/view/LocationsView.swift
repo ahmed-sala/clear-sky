@@ -8,11 +8,63 @@
 import SwiftUI
 
 struct LocationsView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
-}
 
-#Preview {
-    LocationsView()
+    @StateObject var viewModel: LocationsViewModel
+
+    var backgroundImageName: String {
+        TimeHelper.backgroundImageName()
+    }
+
+    var body: some View {
+
+        NavigationStack {
+
+            ZStack {
+
+                BackgroundView(
+                    imageName: backgroundImageName
+                )
+
+                LocationsContentView(
+                    viewModel: viewModel
+                )
+            }
+            .navigationTitle("Locations")
+            .navigationBarTitleDisplayMode(.large)
+        }
+        .preferredColorScheme(.dark)
+        .searchable(
+            text: $viewModel.searchText,
+            prompt: "Search city"
+        )
+        .onChange(of: viewModel.searchText) {
+
+            Task {
+                await viewModel.search()
+            }
+        }
+        .alert(
+            "Delete Location",
+            isPresented: $viewModel.showDeleteAlert
+        ) {
+
+            Button(
+                "Delete",
+                role: .destructive
+            ) {
+                viewModel.deleteSelectedLocation()
+            }
+
+            Button(
+                "Cancel",
+                role: .cancel
+            ) { }
+
+        } message: {
+
+            Text(
+                "Are you sure you want to remove this location?"
+            )
+        }
+    }
 }

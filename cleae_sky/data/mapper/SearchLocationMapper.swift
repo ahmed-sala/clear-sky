@@ -10,8 +10,7 @@ extension SearchLocationDTO {
             name: name ?? "",
             latitude: lat ?? 0,
             longitude: lon ?? 0,
-            country: country ?? "",
-            state: region
+            country: country ?? ""
         )
     }
 }

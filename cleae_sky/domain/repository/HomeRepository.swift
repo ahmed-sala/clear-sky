@@ -10,9 +10,4 @@ protocol HomeRepository {
                               lon: Double,
                               units: String,
                               lang: String) async throws -> HomeWeatherData
-
-    func fetchLocationName(lat: Double,
-                           lon: Double) async throws -> SearchLocation
-
-    func searchLocations(query: String) async throws -> [SearchLocation]
 }

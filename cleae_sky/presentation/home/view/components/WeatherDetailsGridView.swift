@@ -70,9 +70,7 @@ struct WeatherDetailsGridView: View {
 
         WeatherDetailsGridView(weather: HomeWeatherData(
             cityName: "Cairo",
-            country: "EG",
             currentTemperature: 28,
-            weatherCondition: "Clear",
             weatherDescription: "clear sky",
             weatherIcon: "sun.max.fill",
             tempMax: 35,

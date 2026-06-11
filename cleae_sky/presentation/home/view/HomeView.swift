@@ -15,30 +15,52 @@ struct HomeView: View {
     @StateObject private var viewModel: HomeViewModel
     @StateObject private var locationManager = LocationManager()
 
-    init(viewModel: HomeViewModel) {
+    let cityLat: Double?
+    let cityLon: Double?
+
+    init(
+        viewModel: HomeViewModel,
+        cityLat: Double? = nil,
+        cityLon: Double? = nil
+    ) {
         _viewModel = StateObject(wrappedValue: viewModel)
+        self.cityLat = cityLat
+        self.cityLon = cityLon
     }
 
     var body: some View {
-        NavigationStack {
-            ZStack {
-                BackgroundView(
-                    imageName: viewModel.backgroundImageName
-                )
+        ZStack {
+            BackgroundView(
+                imageName: viewModel.backgroundImageName
+            )
 
-                HomeContentView(
-                    state: viewModel.state,
-                    isLocationDenied: locationManager.isDenied,
-                    openSettings: {
-                        locationManager.openSettings()
-                    }
-                )
-            }
+            HomeContentView(
+                state: viewModel.state,
+                isLocationDenied: locationManager.isDenied,
+                openSettings: {
+                    locationManager.openSettings()
+                }
+            )
         }
         .onAppear {
-            handleInitialLocationRequest()
+
+            if let lat = cityLat,
+               let lon = cityLon {
+
+                viewModel.loadWeather(
+                    lat: lat,
+                    lon: lon
+                )
+
+            } else {
+
+                handleInitialLocationRequest()
+            }
         }
         .onReceive(locationManager.$location.compactMap { $0 }) { location in
+
+            guard cityLat == nil else { return }
+
             loadWeather(for: location)
         }
     }
