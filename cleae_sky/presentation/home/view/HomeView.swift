@@ -20,19 +20,20 @@ struct HomeView: View {
     }
 
     var body: some View {
-        ZStack {
+        NavigationStack {
+            ZStack {
+                BackgroundView(
+                    imageName: viewModel.backgroundImageName
+                )
 
-            HomeBackgroundView(
-                imageName: viewModel.backgroundImageName
-            )
-
-            HomeContentView(
-                state: viewModel.state,
-                isLocationDenied: locationManager.isDenied,
-                openSettings: {
-                    locationManager.openSettings()
-                }
-            )
+                HomeContentView(
+                    state: viewModel.state,
+                    isLocationDenied: locationManager.isDenied,
+                    openSettings: {
+                        locationManager.openSettings()
+                    }
+                )
+            }
         }
         .onAppear {
             handleInitialLocationRequest()

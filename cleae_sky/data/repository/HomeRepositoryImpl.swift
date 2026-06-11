@@ -110,6 +110,10 @@ private extension HomeRepositoryImpl {
             timezone: forecast.timezone
         )
 
+        let hourlyForecasts = buildHourlyForecasts(
+            from: forecast.forecastItems,
+            current: current
+        )
 
         let today = dailySummaries.first
 
@@ -126,7 +130,8 @@ private extension HomeRepositoryImpl {
             visibility: current.visibility,
             feelsLike: current.feelsLike,
             pressure: current.pressure,
-            dailyForecasts: dailySummaries
+            dailyForecasts: dailySummaries,
+            hourlyForecasts: hourlyForecasts
         )
     }
 
@@ -205,5 +210,44 @@ private extension HomeRepositoryImpl {
         }
 
         return summaries
+    }
+    private func buildHourlyForecasts(
+        from items: [ForecastItem],
+        current: CurrentWeather
+    ) -> [HourlyForecast] {
+
+        let now = Date().timeIntervalSince1970
+
+        let nowForecast = HourlyForecast(
+            time: "Now",
+            temperature: current.temperature,
+            weatherIcon: current.weatherIcon
+        )
+
+        let upcoming = items
+            .filter { TimeInterval($0.timestamp) > now }
+            .prefix(4)
+            .map { item in
+                HourlyForecast(
+                    time: formatHour(from: Int(item.timestamp)),
+                    temperature: item.temperature,
+                    weatherIcon: item.weatherIcon
+                )
+            }
+
+        return [nowForecast] + upcoming
+    }
+    private func formatHour(
+        from timestamp: Int
+    ) -> String {
+
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+
+        return formatter.string(
+            from: Date(
+                timeIntervalSince1970: TimeInterval(timestamp)
+            )
+        )
     }
 }

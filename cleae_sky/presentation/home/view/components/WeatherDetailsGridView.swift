@@ -81,7 +81,9 @@ struct WeatherDetailsGridView: View {
             visibility: 10,
             feelsLike: 29,
             pressure: 1012,
+
             dailyForecasts: []
+            , hourlyForecasts: []
         ))
     }
 }

@@ -9,7 +9,7 @@
 
 import SwiftUI
 
-struct HomeBackgroundView: View {
+struct BackgroundView: View {
 
     let imageName: String
 

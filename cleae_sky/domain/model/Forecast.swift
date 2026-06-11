@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Forecast: Equatable {
+struct Forecast{
     let cityName: String
     let country: String
     let latitude: Double

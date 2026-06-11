@@ -41,7 +41,7 @@ struct WeatherHeaderView: View {
             .padding(.bottom, -8)
 
             HStack(spacing: 8) {
-                WeatherIconView(icon: icon)
+                WeatherIconView(icon: icon,size:40)
                     .frame(width: 32, height: 32)
 
                 Text(condition)
