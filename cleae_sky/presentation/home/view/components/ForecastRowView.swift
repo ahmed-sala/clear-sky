@@ -18,7 +18,7 @@ struct ForecastRowView: View {
                 .foregroundColor(.primary)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-            WeatherIconView(icon: forecast.weatherIcon)
+            WeatherIconView(icon: forecast.weatherIcon,size:40)
                 .frame(width: 30, height: 30)
 
             HStack(spacing: 8) {

@@ -50,7 +50,7 @@ extension HomeWeatherDataEntity {
             pressure: pressure,
             dailyForecasts: dailyForecasts.map {
                 $0.toDomain()
-            }
+            },hourlyForecasts: []
         )
     }
 }

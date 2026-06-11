@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ForecastItem: Equatable {
+struct ForecastItem {
     let timestamp: Int64                     
     let dateTime: String                     
 
