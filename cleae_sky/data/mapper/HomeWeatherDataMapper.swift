@@ -2,8 +2,10 @@
 //  HomeWeatherDataMapper.swift
 //  cleae_sky
 //
-//  Created by Ahmed Salah on 07/06/2026.
+//  Created by Ahmed Salah on 11/06/2026.
 //
+
+import Foundation
 
 extension HomeWeatherData {
 
@@ -23,16 +25,12 @@ extension HomeWeatherData {
             feelsLike: feelsLike,
             pressure: pressure,
             dailyForecasts: dailyForecasts.map {
-                DailyForecastEntity(
-                    dayLabel: $0.dayLabel,
-                    weatherIcon: $0.weatherIcon,
-                    tempMin: $0.tempMin,
-                    tempMax: $0.tempMax
-                )
+                $0.toEntity()
             }
         )
     }
 }
+
 extension HomeWeatherDataEntity {
 
     func toDomain() -> HomeWeatherData {
@@ -51,12 +49,7 @@ extension HomeWeatherDataEntity {
             feelsLike: feelsLike,
             pressure: pressure,
             dailyForecasts: dailyForecasts.map {
-                DailyForecastSummary(
-                    dayLabel: $0.dayLabel,
-                    weatherIcon: $0.weatherIcon,
-                    tempMin: $0.tempMin,
-                    tempMax: $0.tempMax
-                )
+                $0.toDomain()
             }
         )
     }

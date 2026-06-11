@@ -13,8 +13,8 @@ struct APIConfiguration {
     let timeoutInterval: TimeInterval
 
     static let `default` = APIConfiguration(
-        baseURL: "https://api.openweathermap.org",
-        apiKey: "",
+        baseURL: "https://api.weatherapi.com/v1",
+        apiKey: "1759209f520142e7929205611261006",
         timeoutInterval: 30
     )
 }

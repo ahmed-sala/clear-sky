@@ -18,57 +18,51 @@ protocol APIEndpoint {
     var method: HTTPMethod { get }
     var queryParameters: [String: String] { get }
 }
-
-
 enum WeatherEndpoint: APIEndpoint {
 
-    case currentWeather(lat: Double, lon: Double, units: String, lang: String)
-    case forecast(lat: Double, lon: Double, units: String, lang: String)
-    case geocodingByName(query: String, limit: Int)
-    case geocodingByCoordinates(lat: Double, lon: Double, limit: Int)
+    case currentWeather(lat: Double, lon: Double, lang: String)
+    case forecast(lat: Double, lon: Double, days: Int, lang: String)
+    case searchByName(query: String)
+    case searchByCoordinates(lat: Double, lon: Double)
 
     var path: String {
         switch self {
         case .currentWeather:
-            return "/data/2.5/weather"
-        case .forecast:  
-            return "/data/2.5/forecast"
-        case .geocodingByName:    
-            return "/geo/1.0/direct"
-        case .geocodingByCoordinates:  
-            return "/geo/1.0/reverse"
+            return "/current.json"
+        case .forecast:
+            return "/forecast.json"
+        case .searchByName, .searchByCoordinates:
+            return "/search.json"
         }
     }
 
-    var method: HTTPMethod { .GET }
+    var method: HTTPMethod {
+        .GET
+    }
 
     var queryParameters: [String: String] {
         switch self {
-        case .currentWeather(let lat, let lon, let units, let lang):
+
+        case let .currentWeather(lat, lon, lang):
             return [
-                "lat": "\(lat)",
-                "lon": "\(lon)",
-                "units": units,
+                "q": "\(lat),\(lon)",
                 "lang": lang
             ]
-        case .forecast(let lat, let lon, let units, let lang):
+
+        case let .forecast(lat, lon, days, lang):
             return [
-                "lat": "\(lat)",
-                "lon": "\(lon)",
-                "units": units,
-                "lang": lang
+                "q": "\(lat),\(lon)",
+                "days": "\(days)",
+                "lang": lang,
+                "aqi": "no",
+                "alerts": "no"
             ]
-        case .geocodingByName(let query, let limit):
-            return [
-                "q": query,
-                "limit": "\(limit)"
-            ]
-        case .geocodingByCoordinates(let lat, let lon, let limit):
-            return [
-                "lat": "\(lat)",
-                "lon": "\(lon)",
-                "limit": "\(limit)"
-            ]
+
+        case let .searchByName(query):
+            return ["q": query]
+
+        case let .searchByCoordinates(lat, lon):
+            return ["q": "\(lat),\(lon)"]
         }
     }
 }

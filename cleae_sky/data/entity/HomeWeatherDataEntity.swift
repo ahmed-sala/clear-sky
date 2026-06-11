@@ -4,7 +4,6 @@
 //
 //  Created by Ahmed Salah on 07/06/2026.
 //
-
 import SwiftData
 
 @Model
@@ -15,14 +14,13 @@ final class HomeWeatherDataEntity {
 
     var cityName: String
     var country: String
+
     var currentTemperature: Double
     var weatherCondition: String
     var weatherDescription: String
-    var weatherIcon: String
-
+    var weatherIcon: String       
     var tempMax: Double
     var tempMin: Double
-
     var humidity: Int
     var visibility: Int
     var feelsLike: Double
