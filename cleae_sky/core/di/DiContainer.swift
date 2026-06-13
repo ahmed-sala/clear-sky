@@ -14,7 +14,7 @@ final class DIContainer {
     private let apiConfiguration: APIConfiguration
     private let modelContainer: ModelContainer
 
-    init(
+    private init(
         apiConfiguration: APIConfiguration = .default
     ) {
         self.apiConfiguration = apiConfiguration
@@ -30,47 +30,43 @@ final class DIContainer {
         }
     }
 
-    private(set) lazy var apiService: APIService = {
+
+    private lazy var apiService: APIService =
         ApiServiceImpl(configuration: apiConfiguration)
-    }()
 
-    private(set) lazy var weatherRemoteDataSource: WeatherRemoteDataSource = {
+
+    private lazy var weatherRemoteDataSource: WeatherRemoteDataSource =
         WeatherRemoteDataSourceImpl(apiService: apiService)
-    }()
 
-    private(set) lazy var homeWeatherLocalDataSource: HomeWeatherLocalDataSource = {
+    private lazy var homeWeatherLocalDataSource: HomeWeatherLocalDataSource =
         HomeWeatherLocalDataSourceImpl(
             context: modelContainer.mainContext
         )
-    }()
 
-    private(set) lazy var homeRepository: HomeRepository = {
+    private lazy var locationLocalDataSource: LocationLocalDataSource =
+        LocationLocalDataSourceImpl(
+            context: modelContainer.mainContext
+        )
+
+
+    private lazy var homeRepository: HomeRepository =
         HomeRepositoryImpl(
             remoteDataSource: weatherRemoteDataSource,
             localDataSource: homeWeatherLocalDataSource
         )
-    }()
 
-
-    private(set) lazy var locationLocalDataSource: LocationLocalDataSource = {
-        LocationLocalDataSourceImpl(
-            context: modelContainer.mainContext
-        )
-    }()
-
-    private(set) lazy var locationRepository: LocationRepository = {
+    private lazy var locationRepository: LocationRepository =
         LocationRepositoryImpl(
             remoteDataSource: weatherRemoteDataSource,
             localDataSource: locationLocalDataSource
         )
-    }()
+
 
     func makeHomeViewModel() -> HomeViewModel {
         HomeViewModel(repository: homeRepository)
     }
+
     func makeLocationsViewModel() -> LocationsViewModel {
-        LocationsViewModel(
-            repository: locationRepository
-        )
+        LocationsViewModel(repository: locationRepository)
     }
 }
